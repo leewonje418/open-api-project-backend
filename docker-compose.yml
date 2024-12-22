@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15.8
+    container_name: nest_chatbot_db
+    restart: always
+    environment:
+      POSTGRES_DB: nest_chatbot
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+
+  app:
+    build: .
+    env_file:
+      - .env
+    container_name: nest_chatbot_app
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      PGUSER: postgres
+      PGHOST: db
+      PGDATABASE: postgres
+      PGPASSWORD: nest_chatbot
+      PGPORT: 5432
+volumes:
+  dbdata:
